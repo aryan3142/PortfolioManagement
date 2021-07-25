@@ -39,7 +39,7 @@ There is also be a customer Portal developed part of this project that consumes 
 ### ⚡ Individual Components of the System
 - [Authorization MicroService](https://github.com/ryan3142/PortfolioManagement/tree/main/Authorization)
 - [Share Price Microservice](https://github.com/ryan3142/PortfolioManagement/tree/main/Share%20Price%20Microservice)
-- Mutual Fund Microservice
+- [Mutual Fund Microservice](https://github.com/ryan3142/PortfolioManagement/tree/main/Mutual%20Fund%20Microservice)
 - Customer Portal
 - Daily Net Worth Microservice
 
