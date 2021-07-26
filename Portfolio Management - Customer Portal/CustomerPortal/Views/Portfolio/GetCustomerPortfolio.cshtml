@@ -1,0 +1,52 @@
+﻿@model CustomerPortal.Models.PortfolioDetails
+
+@{
+    Layout = "_Layout";
+}
+
+
+<div class="container">
+    <h4 class="display-4">Portfolio Networth : INR @Model.NetWorth</h4>
+    <div class="row">
+        <br />
+        <h4><i> Stocks owned</i></h4>
+       
+
+            @foreach (var stock in Model.StockList)
+            {
+                <div class="col-md-4">
+                    <div class="card mb-4 shadow-sm" style="width: 18rem;">
+                        <img class="card-img-top" src="~/Images/dummy.jpg" alt="Card image cap">
+                        <div class="card-body">
+                            <h5 class="card-title">@stock.StockName</h5>
+                            <p class="card-text"> @stock.StockCount</p>
+                            <a asp-controller="Portfolio" asp-action="SellAssets" asp-route-assetName="@stock.StockName" asp-route-id="@Model.PortfolioId" asp-route-assetType="Stock" class="btn btn-primary">Sell Asset</a>
+                            <!--  <small class="text-muted"> </small>-->
+                        </div>
+                    </div>
+                </div>
+            }
+
+        </div>
+     
+    <div class="row">
+        <br />
+        <h4><i>Mutual Funds owned</i> </h4>
+     
+            @foreach (var mutualFund in Model.MutualFundList)
+            {
+                <div class="col-md-4">
+                    <div class="card mb-4 shadow-sm" style="width: 18rem;">
+                        <img class="card-img-top" src="~/Images/dummy.jpg" alt="Card image cap">
+                        <div class="card-body">
+                            <h5 class="card-title">@mutualFund.MutualFundName</h5>
+                            <p class="card-text"> @mutualFund.MutualFundUnits</p>
+                            <a asp-controller="Portfolio" asp-action="SellAssets" asp-route-assetName="@mutualFund.MutualFundName" asp-route-id="@Model.PortfolioId" asp-route-assetType="MutualFund" class="btn btn-primary">Sell Asset</a>
+                            <!--  <small class="text-muted"> </small>-->
+                        </div>
+                    </div>
+                </div>
+            }
+
+        </div>
+    </div>
