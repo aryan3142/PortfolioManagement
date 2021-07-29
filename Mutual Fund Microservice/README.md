@@ -1,4 +1,4 @@
-# 👣 **mUTUAL fUND Microservice**
+# 👣 **Mutual Fund Microservice**
 
 >## **Project Manager: Aryan Khandelwal**
 >## ✍&nbsp; Functional Requirements
