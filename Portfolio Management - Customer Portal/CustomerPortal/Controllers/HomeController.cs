@@ -1,46 +1,67 @@
-﻿using CustomerPortal.Models;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
-using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace CustomerPortal.Controllers
 {
+    /// <summary>
+    /// Provides methods that respond to HTTP requests for home controller
+    /// </summary>
     public class HomeController : Controller
     {
-        private readonly ILoggerManager _logger;
+        /// <summary>
+        /// Logger service
+        /// </summary>
+        private readonly ILogger<HomeController> logger;
 
-        public HomeController(ILoggerManager logger)
+        /// <summary>
+        /// Initializes a new instance of the <see cref="HomeController"/> class
+        /// </summary>
+        /// <param name="logger">Logger</param>
+        public HomeController(ILogger<HomeController> logger)
         { 
-            _logger = logger;
+            this.logger = logger;
         }
 
+        /// <summary>
+        /// Index method to return home page view
+        /// </summary>
+        /// <returns></returns>
         public IActionResult Index()
         {
-            _logger.LogInformation($"Navigated to Home page");
+            logger.LogInformation($"Navigated to Home page");
             return View();
         }
 
+        /// <summary>
+        /// Action method to navigate to login page
+        /// </summary>
+        /// <param name="status"></param>
+        /// <returns>Login page</returns>
         [Route("login")]
         public IActionResult Login(bool status = false)
         {
             if(status == true)
             {
                 ViewBag.Status = true;
-                _logger.LogInformation(nameof(Login) + $"method invoked");
+                logger.LogInformation(nameof(Login) + $"method invoked");
                 return View();              
             }
             return View();
         }
 
+        /// <summary>
+        /// Action method to navigate to contact us page
+        /// </summary>
+        /// <returns>Contact us page</returns>
         public IActionResult ContactUs()
         {
             return View();
         }
 
+        /// <summary>
+        /// Action method to navigate to about us page
+        /// </summary>
+        /// <returns>About us page</returns>
         public IActionResult AboutUs()
         {
             return View();

@@ -2,52 +2,52 @@
 using CustomerPortal.Service;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Newtonsoft.Json;
+using Microsoft.Extensions.Logging;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Net;
 using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Text;
-using System.Threading.Tasks;
 
 namespace CustomerPortal.Controllers
 {
+    /// <summary>
+    /// Provides methods that respond to HTTP requests for account controller
+    /// </summary>
     public class AccountController : Controller
     {
-        private readonly IAuthorizationService _authorizationService;
-        private readonly ILoggerManager _logger;
+        /// <summary>
+        /// Authorization service
+        /// </summary>
+        private readonly IAuthorizationService authorizationService;
 
-        public AccountController(IAuthorizationService authorizationService, ILoggerManager logger)
+        /// <summary>
+        /// Logger service
+        /// </summary>
+        private readonly ILogger<AccountController> logger;
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="AccountController"/> class
+        /// </summary>
+        /// <param name="authorizationService">Authorization service</param>
+        /// <param name="logger">Logger service</param>
+        public AccountController(IAuthorizationService authorizationService, ILogger<AccountController> logger)
         {
-            _authorizationService = authorizationService;
-            _logger = logger;
-        }
-        public IActionResult Index()
-        {
-            if (CheckStatus())
-            {
-                ViewBag.UserName = HttpContext.Session.GetString("Username");
-                ViewBag.Address1 = HttpContext.Session.GetString("CustomerAddress1");
-                ViewBag.Address2 = HttpContext.Session.GetString("CustomerAddress2");
-                ViewBag.City = HttpContext.Session.GetString("City");
-                ViewBag.Name = HttpContext.Session.GetString("Name");
-                ViewBag.Phone = HttpContext.Session.GetString("Phone");
-                ViewBag.PortfolioId = HttpContext.Session.GetString("PortfolioId");
-                _logger.LogInformation($"Navigated to {ViewBag.UserName}'s home page");
-                return View();
-            }
-            return RedirectToAction("Index", "Home");
+            this.authorizationService = authorizationService;
+            this.logger = logger;
         }
 
+        /// <summary>
+        /// Login method
+        /// </summary>
+        /// <param name="user"></param>
+        /// <returns>Login status</returns>
         [HttpPost]
         [Route("login")]
         public IActionResult Login(LoginModel user)
         {
             try
             {
-                Customer customer = _authorizationService.GetAuthorizatedCustomer("https://localhost:44316/api/Auth/login", user);
+                Customer customer = authorizationService.GetAuthorizatedCustomer("https://localhost:44316/api/Auth/login", user);
                 if(customer != null)
                 {
                    using (var client = new HttpClient())
@@ -63,11 +63,11 @@ namespace CustomerPortal.Controllers
                         HttpContext.Session.SetString("Phone", Convert.ToString(customer.PhoneNumber));
                         HttpContext.Session.SetString("PortfolioId", Convert.ToString(customer.PortfolioId));
                     }
-                    _logger.LogInformation($"Login Initiated");
+                    logger.LogInformation($"Login Initiated");
                     return RedirectToAction("Index", "Account");
                 }
                 ModelState.Clear();
-                _logger.LogInformation($"Unauthorized access");
+                logger.LogInformation($"Unauthorized access");
                 ModelState.AddModelError("", "Username or Password is incorrect");
                 return RedirectToAction("Login","Home", new { status = true });
 
@@ -80,13 +80,44 @@ namespace CustomerPortal.Controllers
                 };
                 return View("Error",error);
             }
-        } 
+        }
+
+        /// <summary>
+        /// Logout method
+        /// </summary>
+        /// <returns>Redirects to home page</returns>
         public IActionResult Logout()
         {
             HttpContext.Session.Clear();
-            _logger.LogInformation($"Logged out successfully");
+            logger.LogInformation($"Logged out successfully");
             return RedirectToAction("Index", "Home");
         }
+
+
+        /// <summary>
+        /// Index method
+        /// </summary>
+        public IActionResult Index()
+        {
+            if (CheckStatus())
+            {
+                ViewBag.UserName = HttpContext.Session.GetString("Username");
+                ViewBag.Address1 = HttpContext.Session.GetString("CustomerAddress1");
+                ViewBag.Address2 = HttpContext.Session.GetString("CustomerAddress2");
+                ViewBag.City = HttpContext.Session.GetString("City");
+                ViewBag.Name = HttpContext.Session.GetString("Name");
+                ViewBag.Phone = HttpContext.Session.GetString("Phone");
+                ViewBag.PortfolioId = HttpContext.Session.GetString("PortfolioId");
+                logger.LogInformation($"Navigated to {ViewBag.UserName}'s home page");
+                return View();
+            }
+            return RedirectToAction("Index", "Home");
+        }
+
+        /// <summary>
+        /// Check login status
+        /// </summary>
+        /// <returns>True if login initiated successfully, false otherwise</returns>
         private bool CheckStatus()
         {
             if (HttpContext.Session.GetString("Username") != null)
